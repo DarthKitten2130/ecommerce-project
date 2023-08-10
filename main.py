@@ -32,6 +32,10 @@ Type 'Quit' to exit the page.
         case 'account':
             if signin == False:
                 ID,password = int(input('enter your user id')),input('enter your password')
+                if select_account(ID)['password'] == password:
+                    pass
+                else:
+                    print("Error: password is incorrect")
 
         case 'sell':
             print('sell')

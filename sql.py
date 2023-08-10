@@ -22,6 +22,7 @@ def select_account(ID):
         acc['lname'] = x[2]
         acc['address'] = x[3]
         acc['zip']= x[4]
+        acc['password']= x[5]
     return acc
 
 print(select_account(0))
