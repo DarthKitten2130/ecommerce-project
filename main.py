@@ -31,14 +31,25 @@ Type 'Quit' to exit the page.
             
         case 'account':
             if signin == False:
-                ID,password = int(input('enter your user id')),input('enter your password')
-                if select_account(ID)['password'] == password:
-                    pass
-                else:
-                    print("Error: password is incorrect")
+                while signin == False:
+                    try:
+                        ID,password = int(input('enter your user id')),input('enter your password')
+                        if select_account(ID)['password'] == password:
+                            print("You're logged in!")
+                            signin = True
+                        else:
+                            print("Error: password is incorrect")
+                            continue
+
+                    except KeyError:
+                        print("Your account doesn't exist, please create one")
+                        
 
         case 'sell':
             print('sell')
 
         case 'quit':
             break
+
+        case _:
+            print("Sorry, that command doesn't exist, please try again")
