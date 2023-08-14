@@ -24,5 +24,3 @@ def select_account(ID):
         acc['zip']= x[4]
         acc['password']= x[5]
     return acc
-
-print(select_account(144))
