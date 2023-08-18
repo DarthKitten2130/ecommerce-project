@@ -1,5 +1,5 @@
 from flask import Flask,templating
-#from sql import *
+from sql import *
 
 
 app = Flask(__name__)
