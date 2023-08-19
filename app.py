@@ -30,7 +30,7 @@ def order():
    return templating.render_template("order.html")
 
 # Status (For Delivery) Page
-@app.route('/order/status',methods = ['GET','POST'])
+@app.route('/status',methods = ['GET','POST'])
 def status():
    return templating.render_template("status.html")
 
