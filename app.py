@@ -19,6 +19,11 @@ def account():
 def search():
    return templating.render_template("search.html")
 
+# Categories Page
+@app.route('/categories',methods = ['GET','POST'])
+def categories():
+   return templating.render_template("categories.html")
+
 # Product Page
 @app.route('/search/<product_name>',methods = ['GET','POST'])
 def product():
