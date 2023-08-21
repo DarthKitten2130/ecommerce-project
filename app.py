@@ -14,6 +14,11 @@ def home():
 def account():
    return templating.render_template("account.html")
 
+# Sign in Page
+@app.route('/signin',methods = ['GET','POST'])
+def sign_in():
+   return templating.render_template("signin.html")
+
 # Search Page
 @app.route('/search',methods = ['GET','POST'])
 def search():
@@ -23,6 +28,11 @@ def search():
 @app.route('/categories',methods = ['GET','POST'])
 def categories():
    return templating.render_template("categories.html")
+
+#Category Page
+@app.route('/category/<category_name>',methods = ['GET','POST'])
+def category():
+   return templating.render_template("category.html")
 
 # Product Page
 @app.route('/search/<product_name>',methods = ['GET','POST'])
