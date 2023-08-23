@@ -17,10 +17,6 @@ def select_account(ID):
     result = cursor.fetchall()
 
     for x in result:
-        acc['id'] = x[0]
-        acc['fname'] = x[1]
-        acc['lname'] = x[2]
-        acc['address'] = x[3]
-        acc['zip']= x[4]
-        acc['password']= x[5]
+        acc['name'] = x[0]
+        acc['password']= x[1]
     return acc

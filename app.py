@@ -1,4 +1,4 @@
-from flask import Flask,templating
+from flask import Flask,templating,session
 from sql import *
 
 
@@ -12,12 +12,10 @@ def home():
 # Account Page
 @app.route('/account',methods = ['GET','POST'])
 def account():
-   return templating.render_template("account.html")
-
-# Sign in Page
-@app.route('/signin',methods = ['GET','POST'])
-def sign_in():
-   return templating.render_template("signin.html")
+   if 'username' in session:
+      return templating.render_template("account.html")
+   else:
+      return templating.render_template('signin.html')
 
 # Search Page
 @app.route('/search',methods = ['GET','POST'])
@@ -47,13 +45,17 @@ def order():
 # Status (For Delivery) Page
 @app.route('/status',methods = ['GET','POST'])
 def status():
-   return templating.render_template("status.html")
-
+   if 'username' in session:
+      return templating.render_template("status.html")
+   else:
+      return templating.render_template('signin.html')
 # Sell Page
 @app.route('/sell',methods = ['GET','POST'])
 def sell():
-   return templating.render_template("sell.html")
-
+   if 'username' in session:
+      return templating.render_template("account.html")
+   else:
+      return templating.render_template('sell.html')
 
 if __name__ =="__main__":  
     app.run(debug = True)
