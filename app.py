@@ -1,8 +1,9 @@
-from flask import Flask, templating, session, redirect
+from flask import Flask, templating, session, redirect,request
 from sql import *
 
 
 app = Flask(__name__)
+app.secret_key= 'root'
 
 # Home Page
 @app.route('/', methods=['GET', 'POST'])
@@ -13,6 +14,10 @@ def home():
 # Sign in Page
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        session['password'] = request.form['password']
+        return redirect('/')
     return templating.render_template("signin.html")
 
 
