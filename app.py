@@ -8,6 +8,7 @@ app.secret_key= 'root'
 # Home Page
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    session.clear()
     return templating.render_template("home.html")
 
 
@@ -15,8 +16,19 @@ def home():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
-        session['username'] = request.form['username']
-        session['password'] = request.form['password']
+        match account_verification(request.form['username'],
+                                   request.form['password']):
+            
+            case 'doesNotExist':
+                pass
+            
+            case 'wrongPassword':
+                pass
+            
+            case 'verified':
+               session['username'] = request.form['username']
+               session['password'] = request.form['password']        
+
         return redirect('/')
     return templating.render_template("signin.html")
 

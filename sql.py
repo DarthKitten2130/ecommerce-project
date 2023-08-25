@@ -9,14 +9,22 @@ mydb = mysql.connect(
 )
 cursor = mydb.cursor()
 
-def select_account(ID):
+def account_verification(username,password):
     global cursor
+    cursor.execute(f"SELECT username,password from users where username = {username}")
+    results = cursor.fetchall()
     acc = {}
+    for result in results:
+        acc[result[0]] = result[1]
 
-    cursor.execute(f"SELECT * from users where id = {ID}")
-    result = cursor.fetchall()
-
-    for x in result:
-        acc['name'] = x[0]
-        acc['password']= x[1]
-    return acc
+    # Account Does Not Exist
+    if username not in [x[0] for x in results]:
+        return 'doesNotExist'
+    
+    # Entered the Wrong Password
+    elif acc[username] != password:
+        return 'wrongPassword'
+    
+    # Verified
+    elif acc[username] == password:
+        return 'verified'
