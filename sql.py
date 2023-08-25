@@ -11,7 +11,7 @@ cursor = mydb.cursor()
 
 def account_verification(username,password):
     global cursor
-    cursor.execute(f"SELECT username,password from users where username = {username}")
+    cursor.execute(f'SELECT username,password from users where username = "{username}"')
     results = cursor.fetchall()
     acc = {}
     for result in results:

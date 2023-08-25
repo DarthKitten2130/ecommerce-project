@@ -15,24 +15,25 @@ def home():
 # Sign in Page
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
-    if request.method == 'POST':
+   alert_message = ""
+   if request.method == 'POST':
         match account_verification(request.form['username'],
                                    request.form['password']):
             
             case 'doesNotExist':
-                pass
+                alert_message = "Sorry, your account does not exist, please create one." 
             
             case 'wrongPassword':
-                pass
-            
+                alert_message = "The password you entered is incorrect, please try again."
+                
             case 'verified':
                session['username'] = request.form['username']
                session['password'] = request.form['password']        
-
-        return redirect('/')
-    return templating.render_template("signin.html")
-
-
+               return redirect('/')
+            
+   return templating.render_template("signin.html", message = alert_message)
+            
+    
 # Account Page
 @app.route('/account', methods=['GET', 'POST'])
 def account():
