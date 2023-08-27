@@ -8,7 +8,6 @@ app.secret_key= 'root'
 # Home Page
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    session.clear()
     return templating.render_template("home.html")
 
 
@@ -37,10 +36,12 @@ def signin():
 # Account Page
 @app.route('/account', methods=['GET', 'POST'])
 def account():
-    while 'username' not in session:
+    if 'username' not in session:
+        print(session.keys())
         return redirect('/signin')
-
-    return templating.render_template("account.html")
+    
+    else:
+        return templating.render_template("account.html")
 
 
 # Search Page
