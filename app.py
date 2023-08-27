@@ -32,7 +32,13 @@ def signin():
             
    return templating.render_template("signin.html", message = alert_message)
             
-    
+# Sign Out Route
+@app.route('/signout',methods=['GET','POST'])
+def signout():
+    session.clear()
+    return redirect('/')
+
+
 # Account Page
 @app.route('/account', methods=['GET', 'POST'])
 def account():
@@ -40,8 +46,8 @@ def account():
         print(session.keys())
         return redirect('/signin')
     
-    else:
-        return templating.render_template("account.html")
+    
+    return templating.render_template("account.html")
 
 
 # Search Page
