@@ -39,13 +39,17 @@ def signout():
     return redirect('/')
 
 
+# Create Account Page
+@app.route('/createaccount', methods=['GET', 'POST'])
+def createaccount():
+    return templating.render_template("createaccount.html")
+
+
 # Account Page
 @app.route('/account', methods=['GET', 'POST'])
 def account():
     if 'username' not in session:
-        print(session.keys())
         return redirect('/signin')
-    
     
     return templating.render_template("account.html")
 
@@ -83,7 +87,7 @@ def order():
 # Status (For Delivery) Page
 @app.route('/status', methods=['GET', 'POST'])
 def status():
-    while 'username' not in session:
+    if 'username' not in session:
         return redirect('/signin')
 
     return templating.render_template("status.html")
@@ -92,7 +96,7 @@ def status():
 # Sell Page
 @app.route('/sell', methods=['GET', 'POST'])
 def sell():
-    while 'username' not in session:
+    if 'username' not in session:
         return redirect('/signin')
 
     return templating.render_template("sell.html")
