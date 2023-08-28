@@ -1,4 +1,4 @@
-from flask import Flask, templating, session, redirect,request
+from flask import Flask, templating, redirect, request, session 
 from sql import *
 
 
@@ -42,7 +42,24 @@ def signout():
 # Create Account Page
 @app.route('/createaccount', methods=['GET', 'POST'])
 def createaccount():
-    return templating.render_template("createaccount.html")
+    alert_message = ""
+    if request.method == 'POST':
+        match account_creation(request.form['username'],
+                               request.form['password']):
+            
+            case 'existsError':
+                alert_message = 'Sorry, an account with this username already exists. Please use another one.'
+            
+            case 'lengthError':
+                alert_message = 'This username or password is too long, please shorten it.'
+            
+            case 'nullError':
+                alert_message = 'Username or password cannot be null, please enter a value'
+                
+            case 'success':
+                return redirect('/signin')
+    
+    return templating.render_template("createaccount.html",message = alert_message)
 
 
 # Account Page

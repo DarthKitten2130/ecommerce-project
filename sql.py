@@ -36,10 +36,19 @@ def account_creation(username,password):
     results = cursor.fetchall()
     usernames = [x[0] for x in results]
 
+    # Account Exists
     if username in usernames:
         return 'existsError'
+    
+    # Too Long
     elif len(username) > 255 or len(password) > 255:
         return 'lengthError'
+    
+    # Too Short
+    elif len(username) == 0 or len(password) == 0:
+        return 'nullError'
+    
+    # Success
     else:
         cursor.execute(f'insert into users values("{username}","{password}")')
         cursor.execute('commit')

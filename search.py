@@ -1,10 +1,7 @@
-import mysql.connector as mysql
 import pandas as pd
+from sql import cursor
 
-mydb = mysql.connect(host = 'localhost',username = 'root', password = 'root', database = 'ecommerce')
-cursor = mydb.cursor()
 def engine(phrase):
-    global cursor
     
     cursor.execute("select name from products")
     output = cursor.fetchall()
