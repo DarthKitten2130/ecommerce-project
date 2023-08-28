@@ -28,7 +28,7 @@ def signin():
             case 'verified':
                session['username'] = request.form['username']
                session['password'] = request.form['password']        
-               return redirect('/')
+               return redirect('/account')
             
    return templating.render_template("signin.html", message = alert_message)
             
