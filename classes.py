@@ -1,18 +1,19 @@
-from sql import *
 from statistics import mean
 
 class Product:
     
-    def __init__(self,category,name,description,price,discount,stock):
-        self.category = category
+    def __init__(self,name,description,price,discount,stock,category,seller):
+        
         self.name = name
         self.description = description
         self.price = price
         self.discount = discount
         self.discounted_price = self.price * self.discount
         self.stock = stock
+        self.category = category
+        self.seller = seller
         self.reviews = []
-        self.avgrating = mean(self.reviews)
+        self.avgrating = mean([review['rating'] for review in self.reviews])
     
     def has_stock(self):
         return lambda stock: True if self.stock > 0 else False

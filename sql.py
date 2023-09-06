@@ -1,5 +1,6 @@
 # Imported Packages
 import mysql.connector as mysql
+from classes import Product
 
 mydb = mysql.connect(
   host="localhost",
@@ -9,6 +10,7 @@ mydb = mysql.connect(
 )
 cursor = mydb.cursor()
 
+# Account Functions
 def account_verification(username,password):
     global cursor
     cursor.execute(f'SELECT username,password from users where username = "{username}"')
@@ -53,3 +55,23 @@ def account_creation(username,password):
         cursor.execute(f'insert into users values("{username}","{password}")')
         cursor.execute('commit')
         return 'success'
+    
+# Product Functions
+def fetch_product(id):
+    global cursor
+    
+    cursor.execute(f"Select * from products where id = {id}")
+    results = cursor.fetchall()
+    x = results[0]
+    
+    product = Product(
+        x[0],
+        x[1],
+        x[2],
+        x[3],
+        x[4],
+        x[5],
+        x[6],
+        x[7])
+    
+    return product
