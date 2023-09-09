@@ -6,6 +6,20 @@
     <title>Search</title>
 </head>
 <body>
-    Hello World
+    <form method="post">
+        <label for="search">Search our Catalog!</label>
+        <input type="text" name="search" id="search">
+        <input type="submit" name="submit" id="submit">
+    </form>
+
+    <div id="list-container">
+        <ul>
+            {% for item in matches %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
 </body>
 </html>

@@ -1,5 +1,6 @@
 from flask import Flask, templating, redirect, request, session 
 from sql import *
+from search import engine
 
 
 app = Flask(__name__)
@@ -74,8 +75,17 @@ def account():
 # Search Page
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+    if request.method == "POST":
+        matches = ['']
+        try:
+            matches = engine(request.form['search'])
+            print(matches)
+            return templating.render_template("search.html", matches = matches)
+        except:
+            pass
     return templating.render_template("search.html")
-
+    
+        
 
 # Categories Page
 @app.route('/categories', methods=['GET', 'POST'])
