@@ -81,7 +81,7 @@ def search():
             matches = engine(request.form['search'])
             print(matches)
             return templating.render_template("search.html", matches = matches)
-        except:
+        except TypeError:
             pass
     return templating.render_template("search.html")
     
