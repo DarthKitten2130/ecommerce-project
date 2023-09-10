@@ -13,7 +13,6 @@ class Product:
         self.category = category
         self.seller = seller
         self.reviews = []
-        self.avgrating = mean([review['rating'] for review in self.reviews])
     
     def has_stock(self):
         return lambda stock: True if self.stock > 0 else False

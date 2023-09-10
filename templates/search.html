@@ -13,11 +13,7 @@
     </form>
 
     <div id="list-container">
-        <ul>
-            {% for item in matches %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
+        {{matches | safe}}
     </div>
 
 
