@@ -1,5 +1,6 @@
 # Imported Packages
 import mysql.connector as mysql
+import pandas as pd
 from classes import Product
 
 mydb = mysql.connect(
@@ -56,6 +57,7 @@ def account_creation(username,password):
         cursor.execute('commit')
         return 'success'
     
+    
 # Product Functions
 def fetch_product(id):
     global cursor
@@ -75,3 +77,14 @@ def fetch_product(id):
         x[7])
     
     return product
+
+
+def fetch_category(category):
+    global cursor
+    
+    cursor.execute(f'Select name,description,price,discount from products where category = "{category}"')
+    results = cursor.fetchall()
+    
+    output = pd.DataFrame(results,columns=['name','description','price','discount'])
+    
+    return output

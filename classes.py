@@ -8,7 +8,7 @@ class Product:
         self.description = description
         self.price = price
         self.discount = discount
-        self.discounted_price = self.price * self.discount
+        self.discounted_price = self.price * (1-self.discount)
         self.stock = stock
         self.category = category
         self.seller = seller

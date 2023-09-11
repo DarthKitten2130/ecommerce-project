@@ -86,19 +86,14 @@ def search():
         except TypeError:
             pass
     return templating.render_template("search.html")
-    
-        
-
-# Categories Page
-@app.route('/categories', methods=['GET', 'POST'])
-def categories():
-    return templating.render_template("categories.html")
 
 
 # Category Page
 @app.route('/category/<category_name>', methods=['GET', 'POST'])
-def category():
-    return templating.render_template("category.html")
+def category(category_name):
+    results = fetch_category(category=category_name)
+    return templating.render_template("category.html",category = category_name, results = results.to_html(classes='table table-striped',
+                                                                                       index=False))
 
 
 # Product Page
