@@ -1,4 +1,5 @@
 # Imported Packages
+import random
 import mysql.connector as mysql
 import pandas as pd
 from classes import Product
@@ -92,3 +93,17 @@ def fetch_category(category):
     output = pd.DataFrame(results,columns=['name','description','price','discount'])
     
     return output
+
+
+def insert_product(name,description,price,discount,stock,category,seller):
+    global cursor
+    
+    cursor.execute('select id from products')
+    output = cursor.fetchall()
+    
+    ids = [x[0][0] for x in output]
+    
+    id = 0
+    
+    while id in ids:
+        id = random.randrange(0,999)
