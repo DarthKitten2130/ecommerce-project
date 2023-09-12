@@ -6,6 +6,30 @@
     <title>Business</title>
 </head>
 <body>
-    Hello World
+    Welcome to your business! <br>
+
+    Add a new product to your store <br>
+    <form id="sell">
+        <label for="itemName">The Name of your new product</label><br>
+        <input type="text" name="itemName" id="itemName"><br>
+        <label for="description">Describe your product</label><br>
+        <input type="text" name="description" id="description"><br>
+        <label for="price">How much will it cost?</label><br>
+        <input type="number" name="price" id="price" min="1"><br>
+        <label for="discount">Does it have a discount? (put zero for no discount)</label><br>
+        <input type="number" name="discount" id="discount"><br>
+        <label for="stock">How much stock is there?</label><br>
+        <input type="number" name="stock" id="stock" min="1"><br>
+        <label for="category">It's category is </label>
+        <select name="category" id="category">
+            <option value="books">Books</option>
+            <option value="electronics">Electronics</option>
+            <option value="fashion">Fashion</option>
+            <option value="groceries">Groceries</option>
+            <option value="sports">Sports</option>
+        </select> <br>
+        <input type="submit" value="submit">
+
+    </form>
 </body>
 </html>
