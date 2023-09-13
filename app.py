@@ -133,7 +133,10 @@ def sell():
             request.form['category'],
             session['username']
         )
-    return templating.render_template("sell.html")
+    
+    results = fetch_user(session['username'])
+    return templating.render_template("sell.html",results = results.to_html(classes='table table-striped',
+                                                                                       index=False))
 
 
 if __name__ == "__main__":

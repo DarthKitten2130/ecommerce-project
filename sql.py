@@ -94,6 +94,18 @@ def fetch_category(category):
     
     return output
 
+def fetch_user(username):
+    global cursor
+    
+    
+    cursor.execute(f'Select name,description,price,discount from products where seller = "{username}"')
+        
+    results = cursor.fetchall()
+    
+    output = pd.DataFrame(results,columns=['name','description','price','discount'])
+    
+    return output    
+
 
 def insert_product(name,description,price,discount,stock,category,seller):
     global cursor
@@ -108,6 +120,6 @@ def insert_product(name,description,price,discount,stock,category,seller):
     while id in ids:
         id = (random.randrange(0,999))
     
-    cursor.execute(f'insert into products values({id},"{name}","{description}",{price},{discount/100},{stock},"{category}","{seller}")')
+    cursor.execute(f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}")')
     cursor.execute('commit')
     
