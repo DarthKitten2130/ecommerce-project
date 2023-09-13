@@ -123,6 +123,16 @@ def sell():
     if 'username' not in session:
         return redirect('/signin')
 
+    if request.method == "POST":
+        insert_product(
+            request.form['itemName'],
+            request.form['description'],
+            request.form['price'],
+            request.form['discount'],
+            request.form['stock'],
+            request.form['category'],
+            session['username']
+        )
     return templating.render_template("sell.html")
 
 

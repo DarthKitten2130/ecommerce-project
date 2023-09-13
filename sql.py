@@ -101,9 +101,13 @@ def insert_product(name,description,price,discount,stock,category,seller):
     cursor.execute('select id from products')
     output = cursor.fetchall()
     
-    ids = [x[0][0] for x in output]
+    ids = [x[0] for x in output]
     
     id = 0
     
     while id in ids:
-        id = random.randrange(0,999)
+        id = (random.randrange(0,999))
+    
+    cursor.execute(f'insert into products values({id},"{name}","{description}",{price},{discount/100},{stock},"{category}","{seller}")')
+    cursor.execute('commit')
+    
