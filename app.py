@@ -70,7 +70,7 @@ def account():
     if 'username' not in session:
         return redirect('/signin')
     
-    return templating.render_template("account.html")
+    return templating.render_template("account.html",username = session['username'])
 
 
 # Search Page

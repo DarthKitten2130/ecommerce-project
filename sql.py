@@ -104,6 +104,8 @@ def fetch_user(username):
     
     output = pd.DataFrame(results,columns=['name','description','price','discount'])
     
+    
+    
     return output    
 
 
