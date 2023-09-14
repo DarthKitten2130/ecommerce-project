@@ -84,13 +84,13 @@ def fetch_category(category):
     global cursor
     
     if category == 'deals':
-        cursor.execute(f'Select name,description,price,discount from products where discount > 0')
+        cursor.execute(f'Select name,description,price,((1-discount)*price) as discounted from products where discount > 0')
     else:
-        cursor.execute(f'Select name,description,price,discount from products where category = "{category}"')
+        cursor.execute(f'Select name,description,price,((1-discount)*price) as discounted from products where category = "{category}"')
         
     results = cursor.fetchall()
     
-    output = pd.DataFrame(results,columns=['name','description','price','discount'])
+    output = pd.DataFrame(results,columns=['name','description','price','discounted price'])
     
     return output
 
