@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
 </head>
-<body style="background-color:black;color:white">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/black.css') }}">
+<body>
     <form method="post">
         <label for="search">Search our Catalog!</label>
         <input type="text" name="search" id="search">
