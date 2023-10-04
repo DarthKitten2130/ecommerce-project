@@ -93,7 +93,7 @@ def search():
 def category(category_name):
     results = fetch_category(category=category_name)
     return templating.render_template("category.html",category = category_name, results = results.to_html(classes='table table-striped',
-                                                                                       index=False))
+                                                                                       index=False,justify='center',render_links=True))
 
 
 # Product Page

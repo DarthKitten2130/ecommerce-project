@@ -86,11 +86,12 @@ def fetch_category(category):
     if category == 'deals':
         cursor.execute(f'Select name,description,price,((1-discount)*price) as discounted from products where discount > 0')
     else:
-        cursor.execute(f'Select name,description,price,((1-discount)*price) as discounted from products where category = "{category}"')
+        cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
+                       concat('<a href="./search/',id,'"> ',name,'</a>') as link from products where category = "{category}"''')
         
     results = cursor.fetchall()
     
-    output = pd.DataFrame(results,columns=['name','description','price','discounted price'])
+    output = pd.DataFrame(results,columns=['name','description','price','discounted price','links'])
     
     return output
 
