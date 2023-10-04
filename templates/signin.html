@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
 </head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/black.css') }}">
+
 <body>
     sign in
     <br>
-    <form action = "" method = 'post'>
+    <form action="" method='post'>
         <label for="username">Username</label><br>
         <input type="text" id="username" name="username"><br>
         <label for="password">Password</label><br>
@@ -17,11 +19,11 @@
         <input type="submit" name="submit" id="submit">
     </form>
     <h3>Don't have an account? <a href="/createaccount">Create one now</a></h3>
-    <script> 
+    <script>
         var alert_message = "{{message}}"
 
-        if (alert_message) {alert(alert_message)}
-        
+        if (alert_message) { alert(alert_message) }
+
     </script>
 </body>
 
