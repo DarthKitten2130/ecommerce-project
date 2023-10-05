@@ -97,9 +97,9 @@ def category(category_name):
 
 
 # Product Page
-@app.route('/search/<product_name>', methods=['GET', 'POST'])
-def product():
-    return templating.render_template("product.html")
+@app.route('/product/<product_name>', methods=['GET', 'POST'])
+def product(product_name):
+    return templating.render_template("product.html",product_name=product_name)
 
 
 # Order Page
