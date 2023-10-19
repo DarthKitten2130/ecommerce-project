@@ -2,8 +2,9 @@ from statistics import mean
 
 class Product:
     
-    def __init__(self,name,description,price,discount,stock,category,seller):
+    def __init__(self,id,name,description,price,discount,stock,category,seller):
         
+        self.id = id
         self.name = name
         self.description = description
         self.price = price

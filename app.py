@@ -1,13 +1,15 @@
-from flask import Flask, templating, redirect, request, session 
+from flask import Flask, templating, redirect, request, session
 import pandas as pd
 from sql import *
 from search import engine
 
 
 app = Flask(__name__)
-app.secret_key= 'root'
+app.secret_key = 'root'
 
 # Home Page
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return templating.render_template("home.html")
@@ -16,26 +18,28 @@ def home():
 # Sign in Page
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
-   alert_message = ""
-   if request.method == 'POST':
+    alert_message = ""
+    if request.method == 'POST':
         match account_verification(request.form['username'],
                                    request.form['password']):
-            
+
             case 'doesNotExist':
-                alert_message = "Sorry, your account does not exist, please create one." 
-            
+                alert_message = "Sorry, your account does not exist, please create one."
+
             case 'wrongPassword':
                 alert_message = "The password you entered is incorrect, please try again."
-                
+
             case 'verified':
-               session['username'] = request.form['username']
-               session['password'] = request.form['password']        
-               return redirect('/account')
-            
-   return templating.render_template("signin.html", message = alert_message)
-            
+                session['username'] = request.form['username']
+                session['password'] = request.form['password']
+                return redirect('/account')
+
+    return templating.render_template("signin.html", message=alert_message)
+
 # Sign Out Route
-@app.route('/signout',methods=['GET','POST'])
+
+
+@app.route('/signout', methods=['GET', 'POST'])
 def signout():
     session.clear()
     return redirect('/')
@@ -48,20 +52,20 @@ def createaccount():
     if request.method == 'POST':
         match account_creation(request.form['username'],
                                request.form['password']):
-            
+
             case 'existsError':
                 alert_message = 'Sorry, an account with this username already exists. Please use another one.'
-            
+
             case 'lengthError':
                 alert_message = 'This username or password is too long, please shorten it.'
-            
+
             case 'nullError':
                 alert_message = 'Username or password cannot be null, please enter a value'
-                
+
             case 'success':
                 return redirect('/signin')
-    
-    return templating.render_template("createaccount.html",message = alert_message)
+
+    return templating.render_template("createaccount.html", message=alert_message)
 
 
 # Account Page
@@ -69,8 +73,8 @@ def createaccount():
 def account():
     if 'username' not in session:
         return redirect('/signin')
-    
-    return templating.render_template("account.html",username = session['username'])
+
+    return templating.render_template("account.html", username=session['username'])
 
 
 # Search Page
@@ -81,8 +85,8 @@ def search():
         try:
             matches = engine(request.form['search'])
             print(matches)
-            return templating.render_template("search.html", matches = matches.to_html(classes='table table-striped',
-                                                                                       index=False))
+            return templating.render_template("search.html", matches=matches.to_shtml(classes='table table-striped',
+                                                                                     index=False))
         except TypeError:
             pass
     return templating.render_template("search.html")
@@ -92,14 +96,15 @@ def search():
 @app.route('/category/<category_name>', methods=['GET', 'POST'])
 def category(category_name):
     results = fetch_category(category=category_name)
-    return templating.render_template("category.html",category = category_name, results = results.to_html(classes='table table-striped',
-                                                                                       index=False,justify='center',render_links=True))
+    return templating.render_template("category.html", category=category_name, results=results.to_html(classes='table table-striped',
+                                                                                                       index=False, justify='center', render_links=True))
 
 
 # Product Page
 @app.route('/product/<product_name>', methods=['GET', 'POST'])
 def product(product_name):
-    return templating.render_template("product.html",product_name=product_name)
+    results = fetch_product(product_name)
+    return templating.render_template("product.html", results=results,product_name = product_name,more_products = fetch_category(results.category).to_dict())
 
 
 # Order Page
@@ -133,10 +138,10 @@ def sell():
             request.form['category'],
             session['username']
         )
-    
+
     results = fetch_user(session['username'])
-    return templating.render_template("sell.html",results = results.to_html(classes='table table-striped',
-                                                                                       index=False))
+    return templating.render_template("sell.html", results=results.to_html(classes='table table-striped',
+                                                                           index=False))
 
 
 if __name__ == "__main__":
