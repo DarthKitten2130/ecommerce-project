@@ -104,7 +104,7 @@ def category(category_name):
 @app.route('/product/<product_name>', methods=['GET', 'POST'])
 def product(product_name):
     results = fetch_product(product_name)
-    return templating.render_template("product.html", results=results,product_name = product_name,more_products = fetch_category(results.category).to_dict())
+    return templating.render_template("product.html", results=results,product_name = product_name,more_products = more_products(results.category))
 
 
 # Order Page

@@ -130,3 +130,15 @@ def insert_product(name, description, price, discount, stock, category, seller):
 
     cursor.execute(f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}")')
     cursor.execute('commit')
+
+
+def more_products(category):
+
+    global cursor
+
+    cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
+                       concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}"''')
+
+    results = cursor.fetchall()
+
+    return results

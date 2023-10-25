@@ -55,9 +55,10 @@
             </td>
         </tr>
         <tr>
-            {% for product in more_products.values()%}
+            {% for product in more_products %}
             <td>
-                {{product | e }}
+                <a href="{{product[4]}}">{{product[0] | e}}</a> <br><br>
+                <b><s>₹{{product[2] | e}}</s> ₹{{product[3] | e}}</b>
             </td>
             {%endfor%}
         </tr>
