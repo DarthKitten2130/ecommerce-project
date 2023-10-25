@@ -15,7 +15,7 @@
         <table style="border: 1px solid black;">
             <tr>
                 <th>
-                    <a href="http://127.0.0.1:5000/home">Home</a>
+                    <a href="http://127.0.0.1:5000/">Home</a>
                 </th>
                 <th>
                     <a href="http://127.0.0.1:5000/search">Search</a>
@@ -35,7 +35,7 @@
     <br>
     <table>
         <tr>
-            <td><img src="{{url_for('static',filename= 'images/'+ product_name +'.jpg')}}"
+            <td style="text-align: center;"><img src="{{url_for('static',filename= 'images/'+ product_name +'.jpg')}}"
                     alt="Sorry, this image is currently unavailable"> <br>
                 <h6>Image</h6></td>
             <td>
@@ -46,7 +46,10 @@
             <td>
                 <h1>₹{{results.price}}</h1>
                 <br><br>
-                <a href="http://127.0.0.1:5000/order"><button>Order Now!</button></a>
+                <form>
+                    <input type="hidden" name="orderid" id="orderid" value="{{product[5]}}">
+                <a href="http://127.0.0.1:5000/order"><input type="submit" value="Order Now"></a>
+            </form>
             </td>
         </tr>
         <tr>
