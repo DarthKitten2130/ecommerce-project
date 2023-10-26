@@ -21,9 +21,6 @@
                     <a href="http://127.0.0.1:5000/search">Search</a>
                 </th>
                 <th>
-                    <a href="http://127.0.0.1:5000/category">Categories</a>
-                </th>
-                <th>
                     <a href="http://127.0.0.1:5000/sell">Business Dashboard</a>
                 </th>
                 <th>
@@ -44,20 +41,28 @@
                 <h3>{{results.description}}</h3>
             </td>
             <td>
-                <h1>₹{{results.price}}</h1>
+                <h1><s>₹{{results.price}}</s><br><br>
+                    ₹{{results.discounted_price}}</h1>
                 <br><br>
-                <form>
-                    <input type="hidden" name="orderid" id="orderid" value="{{product[5]}}">
-                <a href="http://127.0.0.1:5000/order"><input type="submit" value="Order Now"></a>
+                <form method="post">
+                    <input type="hidden" name="orderid" id="orderid" value="{{results.id}}">
+                <input type="submit" value="Order Now">
             </form>
+            <a href="http://127.0.0.1:5000/order">Go to Order</a>
             </td>
         </tr>
         <tr>
+            <td>
+
+            </td>
             <td colspan="3">
                 <h2>More from<a href="http://127.0.0.1:5000/category/{{results.category}}"> {{results.category}}</a>-</h2>
             </td>
         </tr>
         <tr>
+            <td>
+
+            </td>
             {% for product in more_products %}
             <td>
                 <a href="{{product[4]}}">{{product[0] | e}}</a> <br><br>

@@ -131,6 +131,8 @@ def insert_product(name, description, price, discount, stock, category, seller):
     cursor.execute(f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}")')
     cursor.execute('commit')
 
+    return id
+
 
 def more_products(category):
 

@@ -6,6 +6,7 @@ from search import engine
 
 app = Flask(__name__)
 app.secret_key = 'root'
+app.config['UPLOAD_FOLDER'] = './static/images'
 
 # Home Page
 
@@ -104,13 +105,15 @@ def category(category_name):
 @app.route('/product/<product_name>', methods=['GET', 'POST'])
 def product(product_name):
     results = fetch_product(product_name)
+    if request.method == 'POST':
+        session['orderid'] = request.form['orderid']
     return templating.render_template("product.html", results=results,product_name = product_name,more_products = more_products(results.category))
 
 
 # Order Page
 @app.route('/order', methods=['GET', 'POST'])
 def order():
-    return templating.render_template("order.html")
+    return templating.render_template("order.html",orderid = session['orderid'])
 
 
 # Status (For Delivery) Page
@@ -129,7 +132,7 @@ def sell():
         return redirect('/signin')
 
     if request.method == "POST":
-        insert_product(
+        id = insert_product(
             request.form['itemName'],
             request.form['description'],
             request.form['price'],
@@ -138,6 +141,10 @@ def sell():
             request.form['category'],
             session['username']
         )
+
+        f = request.files['image']
+        f.save('./static/images/'+str(id)+'.jpg')
+
 
     results = fetch_user(session['username'])
     return templating.render_template("sell.html", results=results.to_html(classes='table table-striped',
