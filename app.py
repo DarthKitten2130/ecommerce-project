@@ -113,7 +113,8 @@ def product(product_name):
 # Order Page
 @app.route('/order', methods=['GET', 'POST'])
 def order():
-    return templating.render_template("order.html",orderid = session['orderid'])
+    product = fetch_product(session['orderid'])
+    return templating.render_template("order.html",orderid = session['orderid'], product = product)
 
 
 # Status (For Delivery) Page
