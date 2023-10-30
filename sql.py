@@ -154,3 +154,23 @@ def fetch_cc(username):
     results = cursor.fetchall()
 
     return results
+
+def fetch_order(id,username):
+    global cursor
+
+    cursor.execute(f'Select id,name,description,price,discount,stock,category,seller,address from products,users where id = {id} and users.username = "{username}"')
+    results = cursor.fetchall()
+    x = results[0]
+
+    product = Product(
+        x[0],
+        x[1],
+        x[2],
+        x[3],
+        x[4],
+        x[5],
+        x[6],
+        x[7],
+        )
+    address = x[8]
+    return [product,address]

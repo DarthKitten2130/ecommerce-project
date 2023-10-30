@@ -9,22 +9,49 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/white.css') }}">
 
 <body>
-    <a href="http://127.0.0.1:5000">Home</a>
-    Hello World <br>
+    <a href="http://127.0.0.1:5000">Home</a><br><br>
     {{orderid}} <br><br>
 
-    <table>
+    <table style="width: 100%;">
+        <form>
         <tr>
             <td>
+                <h3>Which Credit Card are you Using?</h3>
+                
                 {% for card in cc %}
 
-                <input type="radio" name="card" id= "{{card}}">
+                <input type="radio" name="card" id= "{{card}}" required>
                 <label for="card">{{card[0]}}</label><br>
                
 
                 {%endfor%}
+                <br><br>
+                <label for="cvv">CVV</label>
+                <input type="password" name="cvv" id="cvv" required>
+            
+            </td>
+            <td>
+                <img src="{{url_for('static',filename= 'images/'+ orderid +'.jpg')}}" alt="Sorry, this image isn't currently available">
+            </td>
+            <td>
+                <h2>Order Summary:</h2>
+                <h4>Name: {{product.name}} <br><br>
+                Description: {{product.description}} <br><br>
+                Category: {{product.category}} <br><br>
+                Seller: {{product.seller}} <br><br><br></h4>
+
+                <h2>₹{{product.discounted_price}}</h2>
+
+
             </td>
         </tr>
+        <tr>
+            <td style="width:500px;word-wrap: break-word;">
+                <h3>Address for Delivery:</h3>
+                <h4>{{address}}</h4>
+            </td>
+        </tr>
+    </form>
     </table>
 
     

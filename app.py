@@ -117,9 +117,10 @@ def order():
     if 'username' not in session:
         return redirect('/signin')
     
-    product = fetch_product(session['orderid'])
+    product = fetch_order(session['orderid'],session['username'])[0]
+    address = fetch_order(session['orderid'],session['username'])[1]
     cc = fetch_cc(session['username'])
-    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc)
+    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address)
 
 
 # Status (For Delivery) Page
