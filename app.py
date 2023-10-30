@@ -113,8 +113,12 @@ def product(product_name):
 # Order Page
 @app.route('/order', methods=['GET', 'POST'])
 def order():
+    if 'username' not in session:
+        return redirect('/signin')
+    
     product = fetch_product(session['orderid'])
-    return templating.render_template("order.html",orderid = session['orderid'], product = product)
+    cc = fetch_cc(session['username'])
+    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc)
 
 
 # Status (For Delivery) Page

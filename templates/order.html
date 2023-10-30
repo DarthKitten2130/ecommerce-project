@@ -11,7 +11,23 @@
 <body>
     <a href="http://127.0.0.1:5000">Home</a>
     Hello World <br>
-    {{orderid}}
+    {{orderid}} <br><br>
+
+    <table>
+        <tr>
+            <td>
+                {% for card in cc %}
+
+                <input type="radio" name="card" id= "{{card}}">
+                <label for="card">{{card[0]}}</label><br>
+               
+
+                {%endfor%}
+            </td>
+        </tr>
+    </table>
+
+    
 </body>
 
 </html>
