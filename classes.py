@@ -13,15 +13,9 @@ class Product:
         self.stock = stock
         self.category = category
         self.seller = seller
-        self.reviews = []
-    
+
     def has_stock(self):
         return lambda stock: True if self.stock > 0 else False
-    
-    def insert_review(self,user,rating,review):
-        self.reviews.append({'user': user,
-                             'rating': rating,
-                             'review': review})
     
     
     
