@@ -77,8 +77,17 @@ def account():
         return redirect('/signin')
     
     products = fetch_user(session['username'])
+    address = fetch_address(session['username'])
 
-    return templating.render_template("account.html", username=session['username'], products = products.to_html(classes='table table-striped',index=False))
+    if len(products) == 0:
+        buser = 'No'
+
+    else:
+        buser = 'Yes'
+
+    return templating.render_template("account.html", username=session['username'], 
+                                      products = products.to_html(classes='table table-striped',index=False),address = address,
+                                      buser=buser)
 
 
 # Search Page
