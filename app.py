@@ -135,15 +135,6 @@ def order():
     return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address)
 
 
-# Status (For Delivery) Page
-@app.route('/status', methods=['GET', 'POST'])
-def status():
-    if 'username' not in session:
-        return redirect('/signin')
-
-    return templating.render_template("status.html")
-
-
 # Sell Page
 @app.route('/sell', methods=['GET', 'POST'])
 def sell():
