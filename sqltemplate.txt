@@ -17,4 +17,4 @@ ecommerce:
     credit_card:
         number int(5) PRIMARY KEY
         cvv int(3)
-        user varchar(255) FOREIGN KEY REFERENCES users(username)
+        username varchar(255) FOREIGN KEY REFERENCES users(username)
