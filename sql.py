@@ -149,28 +149,17 @@ def more_products(category):
 def fetch_cc(username):
     global cursor
 
-    cursor.execute(f'select number,cvv from credit_card where username = "{username}"')
+    cursor.execute(f'select number,cvv from credit_card where user = "{username}"')
 
     results = cursor.fetchall()
 
     return results
 
-def fetch_order(id,username):
+def fetch_address(username):
     global cursor
-
-    cursor.execute(f'Select id,name,description,price,discount,stock,category,seller,address from products,users where id = {id} and users.username = "{username}"')
-    results = cursor.fetchall()
-    x = results[0]
-
-    product = Product(
-        x[0],
-        x[1],
-        x[2],
-        x[3],
-        x[4],
-        x[5],
-        x[6],
-        x[7],
-        )
-    address = x[8]
-    return [product,address]
+    
+    cursor.execute(f'select address from users where username = "{username}"')
+    
+    results = cursor.fetchall()[0][0]
+    
+    return results

@@ -10,10 +10,23 @@
 
 <body>
     <a href="/">Home Page</a> <br><br><br>
-    Hello {{username}} <br>
 
     <table>
-        <tr></tr>
+        <tr>
+            <td>
+                <h1>
+                    Name: {{username}} <br><br>
+                    Business User: <br><br>
+                    Address: {{address}}
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h1>Products:</h1> <br><br>
+                {{products | safe}}
+            </td>
+        </tr>
     </table>
 </body>
 

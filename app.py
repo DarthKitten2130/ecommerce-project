@@ -75,8 +75,10 @@ def createaccount():
 def account():
     if 'username' not in session:
         return redirect('/signin')
+    
+    products = fetch_user(session['username'])
 
-    return templating.render_template("account.html", username=session['username'])
+    return templating.render_template("account.html", username=session['username'], products = products.to_html(classes='table table-striped',index=False))
 
 
 # Search Page
@@ -117,8 +119,9 @@ def order():
     if 'username' not in session:
         return redirect('/signin')
     
-    product = fetch_order(session['orderid'],session['username'])[0]
-    address = fetch_order(session['orderid'],session['username'])[1]
+    
+    product = fetch_product(session['orderid'])
+    address = fetch_address(session['username'])
     cc = fetch_cc(session['username'])
     return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address)
 
