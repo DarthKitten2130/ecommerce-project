@@ -149,7 +149,7 @@ def more_products(category):
 def fetch_cc(username):
     global cursor
 
-    cursor.execute(f'select number,cvv from credit_card where username = "{username}"')
+    cursor.execute(f'select number from credit_card where user = "{username}"')
 
     results = cursor.fetchall()
 
@@ -159,6 +159,16 @@ def fetch_address(username):
     global cursor
     
     cursor.execute(f'select address from users where username = "{username}"')
+    
+    results = cursor.fetchall()[0][0]
+    
+    return results
+
+
+def fetch_cvv(cc):
+    global cursor
+    
+    cursor.execute(f'select cvv from credit_card where number = {cc}')
     
     results = cursor.fetchall()[0][0]
     

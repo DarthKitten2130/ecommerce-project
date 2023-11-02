@@ -132,7 +132,17 @@ def order():
     product = fetch_product(session['orderid'])
     address = fetch_address(session['username'])
     cc = fetch_cc(session['username'])
-    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address)
+    alert_message = ""
+    if request.method == 'POST':
+        if int(request.form['cvv']) == fetch_cvv(request.form['card']):
+            pass
+        else:
+            print(request.form['card'])
+            print(request.form['cvv'])
+            alert_message = 'Sorry, that is the wrong cvv for this credit card'
+        
+    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc[0], address = address,
+                                      alert_message=alert_message)
 
 
 # Sell Page

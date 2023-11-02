@@ -12,15 +12,15 @@
     <a href="http://127.0.0.1:5000">Home</a><br><br>
 
     <table style="width: 100%;">
-        <form>
+        <form id="order" method="post">
         <tr>
             <td>
                 <h3>Which Credit Card are you Using?</h3>
                 
                 {% for card in cc %}
 
-                <input type="radio" name="card" id= "{{card}}" required>
-                <label for="card">{{card[0]}}</label><br>
+                <input type="radio" name="card" id-="card" value= "{{card}}" required>
+                <label for="card">{{card}}</label><br>
                
 
                 {%endfor%}
@@ -39,7 +39,9 @@
                 Category: {{product.category}} <br><br>
                 Seller: {{product.seller}} <br><br><br></h4>
 
-                <h2>₹{{product.discounted_price}}</h2>
+                <h2>₹{{product.discounted_price}}</h2> <br><br>
+
+                <input type="submit" value="Place Order">
 
 
             </td>
@@ -52,7 +54,12 @@
         </tr>
     </form>
     </table>
+    <script>
+        var alert_message = "{{alert_message}}"
 
+        if (alert_message) { alert(alert_message) }
+
+    </script>
     
 </body>
 
