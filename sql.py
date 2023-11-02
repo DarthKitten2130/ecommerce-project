@@ -173,3 +173,10 @@ def fetch_cvv(cc):
     results = cursor.fetchall()[0][0]
     
     return results
+
+
+def update_stock(productid):
+    global cursor
+
+    cursor.execute(f'update products set stock = stock - 1 where id = {productid}')
+    cursor.execute(f'update products set sold = sold + 1 where id = {productid}')

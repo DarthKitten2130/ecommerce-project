@@ -133,9 +133,10 @@ def order():
     address = fetch_address(session['username'])
     cc = fetch_cc(session['username'])
     alert_message = ""
+
     if request.method == 'POST':
         if int(request.form['cvv']) == fetch_cvv(request.form['card']):
-            pass
+            update_stock(session['orderid'])
         else:
             print(request.form['card'])
             print(request.form['cvv'])
