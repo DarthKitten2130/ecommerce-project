@@ -13,6 +13,7 @@ ecommerce:
         stock int NOT NULL
         category varchar(255)
         seller varchar(255) FOREIGN KEY REFERENCES users(username)
+        sold int
     
     credit_card:
         number varchar(5) PRIMARY KEY
