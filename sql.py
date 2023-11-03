@@ -66,7 +66,7 @@ def account_creation(username, password):
 def fetch_product(id):
     global cursor
 
-    cursor.execute(f"Select * from products where id = {id}")
+    cursor.execute(f"Select * from products where id = {id} and stock > 0")
     results = cursor.fetchall()
     x = results[0]
 
@@ -88,21 +88,21 @@ def fetch_category(category):
 
     if category == 'deals':
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0''')
+            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0 and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
         results, columns=['name', 'description', 'price', 'discounted price', 'links'])
     
     elif category == 'home':
         cursor.execute(f'''Select id,name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0''')
+            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0 and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
         results, columns=['id','name', 'description', 'price', 'discounted price', 'links'])
         output['id']= output['id'].astype('str')
     else:
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}"''')
+                       concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}" and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
         results, columns=['name', 'description', 'price', 'discounted price', 'links'])
@@ -116,7 +116,7 @@ def fetch_user(username):
     global cursor
 
     cursor.execute(
-        f'Select name,description,price,discount,stock from products where seller = "{username}"')
+        f'Select name,description,price,discount,stock from products where seller = "{username}" and stock > 0')
 
     results = cursor.fetchall()
 
@@ -150,7 +150,7 @@ def more_products(category):
     global cursor
 
     cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link,id from products where category = "{category}"''')
+                       concat("http://127.0.0.1:5000/product/",id) as link,id from products where category = "{category}" and stock > 0''')
 
     results = cursor.fetchall()
 
