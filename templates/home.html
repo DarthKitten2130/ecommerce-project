@@ -27,23 +27,34 @@
         <tr>
             <td>
                 <br>
+                <h2>
                 <ul>
-                    <li><a href="./category/deals">Deals</a></li>
-                    <br>
                     <li><a href="./category/books">Books</a></li>
                     <li><a href="./category/electronics">Electronics</a></li>
                     <li><a href="./category/fashion">Fashion</a></li>
                     <li><a href="./category/groceries">Groceries</a></li>
                     <li><a href="./category/sports">Sports</a></li>
-
-
-
                 </ul>
+            </h2>
             </td>
         </tr>
         <tr>
-
+            <td></td>
             <td>
+                <h2>
+                <img src="{{url_for('static',filename= 'images/'+ products.iloc[0]['id'] +'.jpg')}}" alt="Sorry, this image doesn't exist"><br><br>
+                <a href="./product/{{products.iloc[0]['id']}}"> {{products.iloc[0]['name']}} </a> <br><br>
+                ₹<s>{{products.iloc[0]['price']}}</s> <br><br>
+                ₹{{products.iloc[0]['discounted price']}}
+            </h2>
+            </td>
+            <td>
+                <h2>
+                <img src="{{url_for('static',filename= 'images/'+ products.iloc[1]['id'] +'.jpg')}}" alt="Sorry, this image doesn't exist"><br><br>
+                <a href="./product/{{products.iloc[1]['id']}}"> {{products.iloc[1]['name']}} </a> <br><br>
+                ₹<s>{{products.iloc[1]['price']}}</s> <br><br>
+                ₹{{products.iloc[1]['discounted price']}}
+            </h2>
             </td>
         </tr>
     </table>

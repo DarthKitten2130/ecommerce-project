@@ -13,7 +13,7 @@ app.config['UPLOAD_FOLDER'] = './static/images'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    products = fetch_category('deals')
+    products = fetch_category('home')
     return templating.render_template("home.html",products = products)
 
 

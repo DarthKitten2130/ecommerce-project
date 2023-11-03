@@ -89,14 +89,25 @@ def fetch_category(category):
     if category == 'deals':
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted, 
             concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0''')
+        results = cursor.fetchall()
+        output = pd.DataFrame(
+        results, columns=['name', 'description', 'price', 'discounted price', 'links'])
+    
+    elif category == 'home':
+        cursor.execute(f'''Select id,name,description,price,((1-discount)*price) as discounted, 
+            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0''')
+        results = cursor.fetchall()
+        output = pd.DataFrame(
+        results, columns=['id','name', 'description', 'price', 'discounted price', 'links'])
+        output['id']= output['id'].astype('str')
     else:
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
                        concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}"''')
-
-    results = cursor.fetchall()
-
-    output = pd.DataFrame(
+        results = cursor.fetchall()
+        output = pd.DataFrame(
         results, columns=['name', 'description', 'price', 'discounted price', 'links'])
+
+    
 
     return output
 
@@ -105,12 +116,12 @@ def fetch_user(username):
     global cursor
 
     cursor.execute(
-        f'Select name,description,price,discount from products where seller = "{username}"')
+        f'Select name,description,price,discount,stock from products where seller = "{username}"')
 
     results = cursor.fetchall()
 
     output = pd.DataFrame(
-        results, columns=['name', 'description', 'price', 'discount'])
+        results, columns=['name', 'description', 'price', 'discount','stock'])
 
     return output
 
@@ -155,6 +166,7 @@ def fetch_cc(username):
 
     return results
 
+
 def fetch_address(username):
     global cursor
     
@@ -176,6 +188,7 @@ def fetch_cvv(cc):
 
 
 def update_stock(productid):
+    
     global cursor
 
     cursor.execute(f'update products set stock = stock - 1 where id = {productid}')
