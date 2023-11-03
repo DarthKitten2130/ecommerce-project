@@ -23,6 +23,18 @@
         </tr>
         <tr>
             <td>
+                <h2>Add a Credit Card</h2> <br>
+                <form method="post">
+                    <label for="card">Card Number</label> <br>
+                    <input type="text" name="card" id="card"> <br><br>
+                    <label for="cvv">CVV</label> <br>
+                    <input type="text" name="cvv" id="cvv"> <br><br>
+                    <input type="submit" value="Add">
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <h1>Products:</h1> <br>
                 {{products | safe}}
             </td>

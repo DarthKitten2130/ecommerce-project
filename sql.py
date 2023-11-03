@@ -183,6 +183,7 @@ def fetch_cvv(cc):
     cursor.execute(f'select cvv from credit_card where number = {cc}')
     
     results = cursor.fetchall()[0][0]
+    print(results)
     
     return results
 
@@ -239,3 +240,10 @@ def engine(phrase):
                                ]
         
     return df
+
+
+def insert_cc(username,number,cvv):
+    global cursor
+
+    cursor.execute(f'insert into credit_card values("{number}","{cvv}","{username}")')
+    cursor.execute('commit')

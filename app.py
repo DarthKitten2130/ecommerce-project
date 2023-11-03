@@ -84,6 +84,9 @@ def account():
     else:
         buser = 'Yes'
 
+    if request.method=='POST':
+        insert_cc(session['username'],request.form['card'],request.form['cvv'])
+
     return templating.render_template("account.html", username=session['username'], 
                                       products = products.to_html(classes='table table-striped',index=False),address = address,
                                       buser=buser,oh = oh.to_html(classes='table table-striped',index=False))
@@ -130,14 +133,14 @@ def order():
     alert_message = ""
 
     if request.method == 'POST':
-        if int(request.form['cvv']) == fetch_cvv(request.form['card']):
+        if request.form['cvv'] == fetch_cvv(request.form['card']):
             update_stock(session['username'],session['orderid'])
         else:
             print(request.form['card'])
             print(request.form['cvv'])
             alert_message = 'Sorry, that is the wrong cvv for this credit card'
         
-    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc[0], address = address,
+    return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address,
                                       alert_message=alert_message)
 
 
