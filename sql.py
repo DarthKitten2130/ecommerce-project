@@ -180,3 +180,4 @@ def update_stock(productid):
 
     cursor.execute(f'update products set stock = stock - 1 where id = {productid}')
     cursor.execute(f'update products set sold = sold + 1 where id = {productid}')
+    cursor.execute('commit')
