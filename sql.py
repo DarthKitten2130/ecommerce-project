@@ -208,3 +208,34 @@ def order_history(username):
     output = pd.DataFrame(cursor.fetchall(), columns = ['Name','Description','Category','Seller','Price', 'Date Bought'])
 
     return output
+
+
+def engine(phrase):
+    phrase = phrase.lower()
+    cursor.execute('select id,name,description,price,discount,stock,category,seller, concat("http://127.0.0.1:5000/product/",id) as link from products')
+    output = cursor.fetchall()
+
+    df = pd.DataFrame(columns=['name','description','price','discount','discounted price','link'])
+
+    
+    for x in output:
+        product = Product(
+        x[0],
+        x[1],
+        x[2],
+        x[3],
+        x[4],
+        x[5],
+        x[7],
+        x[7])
+
+        if phrase in product.name.lower():
+            df.loc[len(df)] = [product.name,
+                               product.description,
+                               product.price,
+                               product.discount,
+                               product.discounted_price,
+                               x[8]
+                               ]
+        
+    return df

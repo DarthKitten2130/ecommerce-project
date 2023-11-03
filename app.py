@@ -1,8 +1,6 @@
 from flask import Flask, templating, redirect, request, session
 import pandas as pd
 from sql import *
-from search import engine
-
 
 app = Flask(__name__)
 app.secret_key = 'root'
@@ -95,14 +93,10 @@ def account():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == "POST":
-        matches = pd.DataFrame()
-        try:
-            matches = engine(request.form['search'])
-            print(matches)
-            return templating.render_template("search.html", matches=matches.to_shtml(classes='table table-striped',
-                                                                                     index=False))
-        except TypeError:
-            pass
+        matches = engine(request.form['search'])
+        print(matches)
+        return templating.render_template("search.html", matches=matches.to_html(classes='table table-striped',
+                                                                                     index=False, render_links=True))
     return templating.render_template("search.html")
 
 
