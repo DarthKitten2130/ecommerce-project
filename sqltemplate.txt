@@ -15,6 +15,11 @@ ecommerce:
         seller varchar(255) FOREIGN KEY REFERENCES users(username)
     
     credit_card:
-        number int(5) PRIMARY KEY
-        cvv int(3)
+        number varchar(5) PRIMARY KEY
+        cvv varchar(3)
         username varchar(255) FOREIGN KEY REFERENCES users(username)
+    
+    order_history:
+        username varchar(255) FOREIGN KEY REFERENCES users(username)
+        product int(3) FOREIGN KEY REFERENCES products(id),
+        buy_date date
