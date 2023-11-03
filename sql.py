@@ -187,10 +187,24 @@ def fetch_cvv(cc):
     return results
 
 
-def update_stock(productid):
+def update_stock(username,productid):
     
     global cursor
 
     cursor.execute(f'update products set stock = stock - 1 where id = {productid}')
+    cursor.execute('commit')
     cursor.execute(f'update products set sold = sold + 1 where id = {productid}')
     cursor.execute('commit')
+    cursor.execute(f'insert into order_history values("{username}",{productid},now())')
+    cursor.execute('commit')
+
+
+def order_history(username):
+    global cursor
+
+    cursor.execute(f'''select name, description,category,seller,((1-discount)*price) as discounted,buy_date from order_history,products 
+                   where order_history.user = "{username}" and order_history.product = products.id''')
+    
+    output = pd.DataFrame(cursor.fetchall(), columns = ['Name','Description','Category','Seller','Price', 'Date Bought'])
+
+    return output

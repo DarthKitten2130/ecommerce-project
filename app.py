@@ -78,6 +78,7 @@ def account():
     
     products = fetch_user(session['username'])
     address = fetch_address(session['username'])
+    oh = order_history(session['username'])
 
     if len(products) == 0:
         buser = 'No'
@@ -87,7 +88,7 @@ def account():
 
     return templating.render_template("account.html", username=session['username'], 
                                       products = products.to_html(classes='table table-striped',index=False),address = address,
-                                      buser=buser)
+                                      buser=buser,oh = oh.to_html(classes='table table-striped',index=False))
 
 
 # Search Page
@@ -136,7 +137,7 @@ def order():
 
     if request.method == 'POST':
         if int(request.form['cvv']) == fetch_cvv(request.form['card']):
-            update_stock(session['orderid'])
+            update_stock(session['username'],session['orderid'])
         else:
             print(request.form['card'])
             print(request.form['cvv'])
