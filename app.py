@@ -97,7 +97,6 @@ def account():
 def search():
     if request.method == "POST":
         matches = engine(request.form['search'])
-        print(matches)
         return templating.render_template("search.html", matches=matches.to_html(classes='table table-striped',
                                                                                      index=False, render_links=True))
     return templating.render_template("search.html")
@@ -136,8 +135,6 @@ def order():
         if request.form['cvv'] == fetch_cvv(request.form['card']):
             update_stock(session['username'],session['orderid'])
         else:
-            print(request.form['card'])
-            print(request.form['cvv'])
             alert_message = 'Sorry, that is the wrong cvv for this credit card'
         
     return templating.render_template("order.html",orderid = session['orderid'], product = product, cc = cc, address = address,
