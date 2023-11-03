@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category</title>
 </head>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/white.css') }}">
 
 <body>
-    {{category}} <br>
+    <a href="http://127.0.0.1:5000/">Home Page</a> <br><br>
+    <h1>{{category}}</h1> <br>
     {{results | safe}}
 </body>
 
