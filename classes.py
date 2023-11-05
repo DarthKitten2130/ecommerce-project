@@ -1,5 +1,3 @@
-from statistics import mean
-
 class Product:
     
     def __init__(self,id,name,description,price,discount,stock,category,seller):
@@ -13,9 +11,6 @@ class Product:
         self.stock = stock
         self.category = category
         self.seller = seller
-
-    def has_stock(self):
-        return lambda stock: True if self.stock > 0 else False
     
     
     

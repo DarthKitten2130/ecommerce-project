@@ -108,7 +108,7 @@ def insert_product(name, description, price, discount, stock, category, seller):
         id = (random.randrange(0, 999))
 
     cursor.execute(
-        f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}")')
+        f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}",0)')
     cursor.execute('commit')
 
     return id
