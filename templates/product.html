@@ -13,16 +13,16 @@
         <table style="border: 1px solid black;">
             <tr>
                 <th>
-                    <a href="http://127.0.0.1:5000/">Home</a>
+                    <a href="{{url_for('/')}}">Home</a>
                 </th>
                 <th>
-                    <a href="http://127.0.0.1:5000/search">Search</a>
+                    <a href={{url_for('search')}}">Search</a>
                 </th>
                 <th>
-                    <a href="http://127.0.0.1:5000/sell">Business Dashboard</a>
+                    <a href="{{url_for('sell')}}">Business Dashboard</a>
                 </th>
                 <th>
-                    <a href="http://127.0.0.1:5000/account">Account</a>
+                    <a href="{{url_for('account')}}">Account</a>
                 </th>
             </tr>
         </table>
@@ -46,7 +46,7 @@
                     <input type="hidden" name="orderid" id="orderid" value="{{results.id}}">
                 <input type="submit" value="Order Now">
             </form>
-            <br><a href="http://127.0.0.1:5000/order">Go to Order</a>
+            <br><a href="{{url_for('order')}}">Go to Order</a>
             </td>
         </tr>
         <tr>
@@ -54,7 +54,7 @@
 
             </td>
             <td colspan="3">
-                <h2>More from<a href="http://127.0.0.1:5000/category/{{results.category}}"> {{results.category}}</a>-</h2>
+                <h2>More from<a href="{{url_for(f'category/{{results.category}}')}}"> {{results.category}}</a>-</h2>
             </td>
         </tr>
         <tr>
