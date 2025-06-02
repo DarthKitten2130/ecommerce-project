@@ -1,18 +1,53 @@
 # Imported Packages
 import random
-import mysql.connector as mysql
+import sqlite3
 import pandas as pd
 from classes import Product
 
-mydb = mysql.connect(
-    host="localhost",
-    user="root",
-    password="root",
-    database="ecommerce"
-)
-cursor = mydb.cursor()
+sqliteConnection = conn = sqlite3.connect('ecommerce.db', check_same_thread=False)
+cursor = sqliteConnection.cursor()
 
 # Account Functions
+
+def create_table():
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password TEXT NOT NULL,
+            address TEXT
+        );
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS products (
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            description TEXT,
+            price REAL,
+            discount REAL,
+            stock INTEGER,
+            category TEXT,
+            seller TEXT,
+            sold INTEGER
+        );
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS credit_card (
+            number TEXT PRIMARY KEY, 
+            cvv TEXT,
+            username TEXT
+        );
+    ''')
+
+    cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS order_history (
+                   user TEXT PRIMARY KEY,
+                   product INT ALTERNATE KEY,
+                   buy_date TEXT);''')
+
+    sqliteConnection.commit()
+
 
 def account_verification(username, password):
     global cursor
@@ -56,7 +91,7 @@ def account_creation(username, password):
 
     # Success
     else:
-        cursor.execute(f'insert into users values("{username}","{password}")')
+        cursor.execute(f'insert into users values("{username}","{password}",NULL)')
         cursor.execute('commit')
         return 'success'
 
@@ -65,7 +100,7 @@ def account_creation(username, password):
 def engine(phrase):
     phrase = phrase.lower()
     cursor.execute(
-        'select id,name,description,price,discount,stock,category,seller, concat("http://127.0.0.1:5000/product/",id) as link from products')
+        'select id,name,description,price,discount,stock,category,seller, "http://127.0.0.1:5000/product/" || id as link from products')
     output = cursor.fetchall()
 
     df = pd.DataFrame(columns=['name', 'description',
@@ -104,8 +139,7 @@ def insert_product(name, description, price, discount, stock, category, seller):
 
     id = 0
 
-    while id in ids:
-        id = (random.randrange(0, 999))
+    id = (random.randrange(0, 999))
 
     cursor.execute(
         f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}",0)')
@@ -147,21 +181,21 @@ def fetch_category(category):
 
     if category == 'deals':
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0 and stock > 0''')
+            "http://127.0.0.1:5000/product/" || id as link from products where discount > 0 and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
 
     elif category == 'home':
         cursor.execute(f'''Select id,name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0 and stock > 0''')
+            "http://127.0.0.1:5000/product/" || id as link from products where stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['id', 'name', 'description', 'price', 'discounted price', 'links'])
         output['id'] = output['id'].astype('str')
     else:
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}" and stock > 0''')
+                       "http://127.0.0.1:5000/product/" || id as link from products where category = "{category}" and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
@@ -194,6 +228,15 @@ def fetch_cc(username):
     return results
 
 
+def fetch_cvv(cc):
+    global cursor
+
+    cursor.execute(f'select cvv from credit_card where number = {cc}')
+
+    results = cursor.fetchall()[0][0]
+
+    return results
+
 def fetch_address(username):
     global cursor
 
@@ -203,15 +246,6 @@ def fetch_address(username):
 
     return results
 
-
-def fetch_cvv(cc):
-    global cursor
-
-    cursor.execute(f'select cvv from credit_card where number = {cc}')
-
-    results = cursor.fetchall()[0][0]
-
-    return results
 
 
 def update_stock(username, productid):
@@ -225,7 +259,7 @@ def update_stock(username, productid):
         f'update products set sold = sold + 1 where id = {productid}')
     cursor.execute('commit')
     cursor.execute(
-        f'insert into order_history values("{username}",{productid},now())')
+        f'insert into order_history values("{username}",{productid},date())')
     cursor.execute('commit')
 
 
@@ -234,7 +268,7 @@ def more_products(category):
     global cursor
 
     cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link,id from products where category = "{category}" and stock > 0''')
+                       "http://127.0.0.1:5000/product/" || id as link,id from products where category = "{category}" and stock > 0''')
 
     results = cursor.fetchall()
 

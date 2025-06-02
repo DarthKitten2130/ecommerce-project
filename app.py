@@ -11,7 +11,9 @@ app.config['UPLOAD_FOLDER'] = './static/images'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    create_table()
     products = fetch_category('home')
+    print(products)
     return templating.render_template("home.html",products = products)
 
 
@@ -168,4 +170,4 @@ def sell():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=10000)

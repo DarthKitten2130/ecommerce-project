@@ -2,61 +2,126 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SathuMart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 10px 20px;
+        }
+
+        nav {
+            background-color: #ddd;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 20%;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin: 10px 0;
+        }
+
+        .products {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            width: 80%;
+        }
+
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            width: calc(50% - 20px);
+            box-sizing: border-box;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .products {
+                width: 100%;
+            }
+
+            .product-card {
+                width: 100%;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <table style="width: 100%; border-spacing: 0px">
-        <tr>
-            <th>
-                <h1> SathuMart </h1>
-            </th>
-            <th>Welcome to SathuMart! Your one stop shop for every good on the market!</th>
-            <th></th>
-            <th><a href='/signout'><button>Sign Out</button></a></th>
-        </tr>
-        <tr>
-            <th><a href="/search"> Search </a></th>
-            <th><a href="/account"> Account </a></th>
-            <th><a href="/sell"> Business Dashboard </a></th>
-        </tr>
-        <tr>
-            <td>
-                <br>
-                <h2>
-                <ul>
-                    <li><a href="./category/books">Books</a></li>
-                    <li><a href="./category/electronics">Electronics</a></li>
-                    <li><a href="./category/fashion">Fashion</a></li>
-                    <li><a href="./category/groceries">Groceries</a></li>
-                    <li><a href="./category/sports">Sports</a></li>
-                </ul>
-            </h2>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <h2>
-                <img src="{{url_for('static',filename= 'images/'+ products.iloc[0]['id'] +'.jpg')}}" alt="Sorry, this image doesn't exist"><br><br>
-                <a href="./product/{{products.iloc[0]['id']}}"> {{products.iloc[0]['name']}} </a> <br><br>
-                ₹<s>{{products.iloc[0]['price']}}</s> <br><br>
-                ₹{{products.iloc[0]['discounted price']}}
-            </h2>
-            </td>
-            <td>
-                <h2>
-                <img src="{{url_for('static',filename= 'images/'+ products.iloc[1]['id'] +'.jpg')}}" alt="Sorry, this image doesn't exist"><br><br>
-                <a href="./product/{{products.iloc[1]['id']}}"> {{products.iloc[1]['name']}} </a> <br><br>
-                ₹<s>{{products.iloc[1]['price']}}</s> <br><br>
-                ₹{{products.iloc[1]['discounted price']}}
-            </h2>
-            </td>
-        </tr>
-    </table>
+    <header>
+        <h1>SathuMart</h1>
+        <p>Welcome to SathuMart! Your one stop shop for every good on the market!</p>
+        <a href="/signout"><button>Sign Out</button></a>
+    </header>
+
+    <nav>
+        <a href="/search">Search</a>
+        <a href="/account">Account</a>
+        <a href="/sell">Business Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Categories</h2>
+            <ul>
+                <li><a href="./category/books">Books</a></li>
+                <li><a href="./category/electronics">Electronics</a></li>
+                <li><a href="./category/fashion">Fashion</a></li>
+                <li><a href="./category/groceries">Groceries</a></li>
+            </ul>
+        </div>
+
+        <div class="products">
+            {% for index,product in products.iterrows() %}
+            <div class="product-card">
+                <img src="{{ url_for('static', filename='images/' + product['id'] + '.jpg') }}"
+                    alt="{{ product['name'] }}">
+                <h3><a href="./product/{{ product['id'] }}">{{ product['name'] }}</a></h3>
+                <p>₹<s>{{ product.price }}</s></p>
+                <p><strong>₹{{ product['discounted price'] }}</strong></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,111 @@
+/* General body styling */
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Home link */
+a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Welcome text */
+body > p,
+body > div,
+body > br {
+    margin-bottom: 1rem;
+}
+
+/* Form styling */
+form#sell {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+form#sell label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    font-weight: 600;
+}
+
+form#sell input[type="text"],
+form#sell input[type="number"],
+form#sell input[type="file"],
+form#sell select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+form#sell input[type="submit"] {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+form#sell input[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+/* Section: Your Products */
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+/* Results section */
+#results-container,
+#product-list {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Optional: style each product in results if using divs or table */
+#results-container div,
+#product-list .product {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+#results-container div:last-child {
+    border-bottom: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    form#sell {
+        width: 100%;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+    }
+}
