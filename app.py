@@ -11,7 +11,9 @@ app.config['UPLOAD_FOLDER'] = './static/images'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    create_table()
     products = fetch_category('home')
+    print(products)
     return templating.render_template("home.html",products = products)
 
 

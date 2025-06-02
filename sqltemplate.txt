@@ -5,22 +5,26 @@ ecommerce:
         password varchar(255)
 
      products:
-        id int PRIMARY KEY
-        name varchar(255) UNIQUE NOT NULL
-        description text NOT NULL
-        price float(8,2) NOT NULL
-        discount float (2,2) DEFAULT 0
-        stock int NOT NULL
-        category varchar(255)
-        seller varchar(255) FOREIGN KEY REFERENCES users(username)
-        sold int
+        id int PRIMARY KEY,
+        name varchar(255) UNIQUE NOT NULL,
+        description text NOT NULL,
+        price float(8,2) NOT NULL,
+        discount float (2,2) DEFAULT 0,
+        stock int NOT NULL,
+        category varchar(255),
+        seller varchar(255),
+        sold int,
+        FOREIGN KEY(seller) REFERENCES users(username)
     
     credit_card:
-        number varchar(5) PRIMARY KEY
-        cvv varchar(3)
-        username varchar(255) FOREIGN KEY REFERENCES users(username)
+        number varchar(5) PRIMARY KEY,
+        cvv varchar(3),
+        username varchar(255), 
+        FOREIGN KEY (username) REFERENCES users(username)
     
     order_history:
-        username varchar(255) FOREIGN KEY REFERENCES users(username)
-        product int(3) FOREIGN KEY REFERENCES products(id),
-        buy_date date
+        username varchar(255),
+        product int(3),
+        buy_date date,
+        FOREIGN KEY (username) REFERENCES users(username),
+        FOREIGN KEY (product) REFERENCES products(id)
