@@ -100,7 +100,7 @@ def account_creation(username, password):
 def engine(phrase):
     phrase = phrase.lower()
     cursor.execute(
-        'select id,name,description,price,discount,stock,category,seller, concat("http://127.0.0.1:5000/product/",id) as link from products')
+        'select id,name,description,price,discount,stock,category,seller, "http://127.0.0.1:5000/product/" || id as link from products')
     output = cursor.fetchall()
 
     df = pd.DataFrame(columns=['name', 'description',
@@ -181,21 +181,21 @@ def fetch_category(category):
 
     if category == 'deals':
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where discount > 0 and stock > 0''')
+            "http://127.0.0.1:5000/product/" || id as link from products where discount > 0 and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
 
     elif category == 'home':
         cursor.execute(f'''Select id,name,description,price,((1-discount)*price) as discounted, 
-            concat("http://127.0.0.1:5000/product/",id) as link from products where stock > 0''')
+            "http://127.0.0.1:5000/product/" || id as link from products where stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['id', 'name', 'description', 'price', 'discounted price', 'links'])
         output['id'] = output['id'].astype('str')
     else:
         cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link from products where category = "{category}" and stock > 0''')
+                       "http://127.0.0.1:5000/product/" || id as link from products where category = "{category}" and stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
@@ -268,7 +268,7 @@ def more_products(category):
     global cursor
 
     cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       concat("http://127.0.0.1:5000/product/",id) as link,id from products where category = "{category}" and stock > 0''')
+                       "http://127.0.0.1:5000/product/" || id as link,id from products where category = "{category}" and stock > 0''')
 
     results = cursor.fetchall()
 
