@@ -1,0 +1,113 @@
+/* General styling */
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+}
+
+/* Home link */
+a {
+    text-decoration: none;
+    color: #4a90e2;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Main table layout */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    vertical-align: top;
+    padding: 1rem;
+}
+
+/* Credit card section */
+h3 {
+    margin-bottom: 1rem;
+    color: #222;
+}
+
+input[type="radio"] {
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+input[type="password"] {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* Image styling */
+td img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Order summary section */
+h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+h4 {
+    font-weight: normal;
+    line-height: 1.6;
+    color: #555;
+}
+
+input[type="submit"] {
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+    margin-top: 1rem;
+}
+
+input[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+/* Address section */
+td h3 + h4 {
+    margin-top: 0.5rem;
+    background-color: #eef1f5;
+    padding: 1rem;
+    border-radius: 6px;
+    color: #444;
+}
+
+/* Responsive handling */
+@media (max-width: 768px) {
+    table, tr, td {
+        display: block;
+        width: 100%;
+    }
+
+    td {
+        margin-bottom: 2rem;
+    }
+
+    td img {
+        width: 100%;
+    }
+}

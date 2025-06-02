@@ -4,13 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category</title>
+    <title>{{ category }} - Category</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/category.css') }}">
 </head>
 
 <body>
-    <a href="http://127.0.0.1:5000/">Home Page</a> <br><br>
-    <h1>{{category}}</h1> <br>
-    {{results | safe}}
+    <nav>
+        <a href="{{ url_for('home') }}">Home Page</a>
+    </nav>
+
+    <main>
+        <h1>{{ category }}</h1>
+        <div class="results">
+            {{ results | safe }}
+        </div>
+    </main>
 </body>
 
 </html>

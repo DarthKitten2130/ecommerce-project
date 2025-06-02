@@ -1,0 +1,85 @@
+/* General body styling */
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Home link */
+a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Page heading */
+body > br + br + form + h3 {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* Sign In form styling */
+form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    margin-top: 1.5rem;
+    padding: 0.75rem;
+    width: 100%;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+/* Create account link */
+h3 {
+    margin-top: 2rem;
+    font-weight: normal;
+    color: #444;
+}
+
+h3 a {
+    font-weight: bold;
+    color: #4a90e2;
+}

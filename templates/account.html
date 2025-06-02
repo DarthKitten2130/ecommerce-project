@@ -6,45 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
 </head>
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/account.css') }}">
 <body>
-    <a href="/">Home Page</a> <br><br><br>
+    <main>
+        <a href="/">Home Page</a> <br><br><br>
 
-    <table>
-        <tr>
-            <td>
-                <h1>
-                    Name: {{username}} <br><br>
-                    Business User: {{buser}} <br><br>
-                    Address: {{address}}
-                </h1>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h2>Add a Credit Card</h2> <br>
-                <form method="post">
-                    <label for="card">Card Number</label> <br>
-                    <input type="text" name="card" id="card"> <br><br>
-                    <label for="cvv">CVV</label> <br>
-                    <input type="text" name="cvv" id="cvv"> <br><br>
-                    <input type="submit" value="Add">
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h1>Products:</h1> <br>
-                {{products | safe}}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h1>Order History:</h1> <br>
-                {{oh | safe}}
-            </td>
-        </tr>
-    </table>
+        <div class="user-info">
+            <h1>
+                Name: {{username}} <br><br>
+                Business User: {{buser}} <br><br>
+                Address: {{address}}
+            </h1>
+        </div>
+
+        <div class="section">
+            <h2>Add a Credit Card</h2>
+            <form method="post">
+                <label for="card">Card Number</label>
+                <input type="text" name="card" id="card">
+                <label for="cvv">CVV</label>
+                <input type="text" name="cvv" id="cvv">
+                <input type="submit" value="Add">
+            </form>
+        </div>
+
+        <div class="section products">
+            <h1>Products:</h1>
+            {{products | safe}}
+        </div>
+
+        <div class="section order-history">
+            <h1>Order History:</h1>
+            {{oh | safe}}
+        </div>
+    </main>
 </body>
+
 
 </html>
