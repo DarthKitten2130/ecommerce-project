@@ -131,11 +131,12 @@ def category(category_name):
 @app.route('/product/<product_name>', methods=['GET', 'POST'])
 def product(product_name):
     results = fetch_product(product_name)
+
     if request.method == 'POST':
         session['orderid'] = request.form['orderid']
 
-    # Fix for DataFrame access
-    category_name = results['category'].iloc[0] if not results.empty else 'home'
+    # Access category from Product object
+    category_name = results.category
 
     return render_template(
         "product.html",
