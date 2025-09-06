@@ -44,7 +44,8 @@
                 <br><br>
                 <form method="post">
                     <input type="hidden" name="orderid" id="orderid" value="{{results.id}}">
-                <input type="submit" value="Order Now">
+                <input type="hidden" name="action" value="add_to_cart">
+                <input type="submit" value="Add to Cart" class="cart-button">
             </form>
             <br><a href="{{url_for('order')}}">Go to Order</a>
             </td>

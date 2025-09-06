@@ -89,6 +89,7 @@
 <body>
     <header>
         <img src="/static/images/leaf.png" alt="Logo" width="50" height="50" style="display: block; margin: 0 auto;">
+        <a href="/cart"><img src="{{ url_for('static', filename='images/cart.png') }}" alt="Cart" width="10%" height="10%"></a>
         <a href="/signout"><button>Sign Out</button></a>
     </header>
 
@@ -97,7 +98,7 @@
         <a href="/account">Account</a>
         <a href="/sell">Business Dashboard</a>
     </nav>
-    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;"><
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
     <img src="{{ url_for('static', filename='images/sus.jpg') }}" alt="banner" width="50%" height="50%">
     <div class="container">
         <div class="sidebar">

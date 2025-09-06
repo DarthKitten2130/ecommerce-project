@@ -134,6 +134,9 @@ def product(product_name):
 
     if request.method == 'POST':
         session['orderid'] = request.form['orderid']
+        if request.form['action'] == 'add_to_cart':
+            add_to_cart(session['username'], session['orderid'])
+            return redirect('/cart')
 
     # Access category from Product object
     category_name = results.category
@@ -200,6 +203,23 @@ def sell():
 
     return render_template(
         "sell.html",
+        results=results.to_html(classes='table table-striped', index=False)
+    )
+
+# Cart Page
+
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    if 'username' not in session:
+        return redirect('/signin')
+
+    results = fetch_cart(session['username'])
+    if results is None:
+        results = pd.DataFrame()
+
+    return render_template(
+        "cart.html",
         results=results.to_html(classes='table table-striped', index=False)
     )
 
