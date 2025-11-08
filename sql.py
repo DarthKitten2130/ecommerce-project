@@ -1,106 +1,235 @@
 # Imported Packages
 import random
-import sqlite3
+import mysql.connector
 import pandas as pd
 from classes import Product
+import os
 
-sqliteConnection = conn = sqlite3.connect(
-    'ecommerce.db', check_same_thread=False)
-cursor = sqliteConnection.cursor()
+# MySQL Configuration
+db_config = {
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASSWORD', ''),
+    'database': os.environ.get('DB_NAME', 'ecommerce'),
+    'autocommit': False
+}
+
+mysqlConnection = mysql.connector.connect(**db_config)
+cursor = mysqlConnection.cursor()
 
 # Account Functions
 
 
 def create_table():
+    # Create database if it doesn't exist (handled at connection level)
+    
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            password TEXT NOT NULL,
+            username VARCHAR(255) PRIMARY KEY,
+            password VARCHAR(255) NOT NULL,
             address TEXT
-        );
+        )
     ''')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS products (
-            id TEXT PRIMARY KEY,
-            name TEXT,
+            id VARCHAR(255) PRIMARY KEY,
+            name VARCHAR(255),
             description TEXT,
-            price REAL,
-            discount REAL,
-            stock INTEGER,
-            category TEXT,
-            seller TEXT,
-            sold INTEGER
-        );
+            price DECIMAL(10,2),
+            discount DECIMAL(3,2),
+            stock INT,
+            category VARCHAR(100),
+            seller VARCHAR(255),
+            sold INT DEFAULT 0
+        )
     ''')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS credit_card (
-            number TEXT PRIMARY KEY, 
-            cvv TEXT,
-            username TEXT
-        );
+            number VARCHAR(20) PRIMARY KEY, 
+            cvv VARCHAR(4),
+            username VARCHAR(255)
+        )
     ''')
 
     cursor.execute('''
-                    CREATE TABLE IF NOT EXISTS order_history (
-                   user TEXT PRIMARY KEY,
-                   product INT ALTERNATE KEY,
-                   buy_date TEXT);''')
+        CREATE TABLE IF NOT EXISTS order_history (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user VARCHAR(255),
+            product VARCHAR(255),
+            buy_date DATE
+        )
+    ''')
 
+    # MySQL Triggers
     # Trigger 1: Prevent negative stock
+    cursor.execute('DROP TRIGGER IF EXISTS prevent_negative_stock')
     cursor.execute('''
-        CREATE TRIGGER IF NOT EXISTS prevent_negative_stock
+        CREATE TRIGGER prevent_negative_stock
         BEFORE UPDATE ON products
         FOR EACH ROW
-        WHEN NEW.stock < 0
         BEGIN
-            SELECT RAISE(ABORT, 'Stock cannot be negative');
-        END;
+            IF NEW.stock < 0 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Stock cannot be negative';
+            END IF;
+        END
     ''')
 
     # Trigger 2: Auto-lowercase usernames for consistency
+    cursor.execute('DROP TRIGGER IF EXISTS lowercase_username')
     cursor.execute('''
-        CREATE TRIGGER IF NOT EXISTS lowercase_username
+        CREATE TRIGGER lowercase_username
         BEFORE INSERT ON users
         FOR EACH ROW
         BEGIN
-            SELECT CASE
-                WHEN NEW.username != LOWER(NEW.username)
-                THEN RAISE(ABORT, 'Username must be lowercase')
-            END;
-        END;
+            IF NEW.username != LOWER(NEW.username) THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Username must be lowercase';
+            END IF;
+        END
     ''')
 
     # Trigger 3: Validate discount range (must be between 0 and 1)
+    cursor.execute('DROP TRIGGER IF EXISTS validate_discount')
     cursor.execute('''
-        CREATE TRIGGER IF NOT EXISTS validate_discount
+        CREATE TRIGGER validate_discount
         BEFORE INSERT ON products
         FOR EACH ROW
-        WHEN NEW.discount < 0 OR NEW.discount > 1
         BEGIN
-            SELECT RAISE(ABORT, 'Discount must be between 0 and 1');
-        END;
+            IF NEW.discount < 0 OR NEW.discount > 1 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Discount must be between 0 and 1';
+            END IF;
+        END
     ''')
 
     # Also validate discount on updates
+    cursor.execute('DROP TRIGGER IF EXISTS validate_discount_update')
     cursor.execute('''
-        CREATE TRIGGER IF NOT EXISTS validate_discount_update
+        CREATE TRIGGER validate_discount_update
         BEFORE UPDATE ON products
         FOR EACH ROW
-        WHEN NEW.discount < 0 OR NEW.discount > 1
         BEGIN
-            SELECT RAISE(ABORT, 'Discount must be between 0 and 1');
-        END;
+            IF NEW.discount < 0 OR NEW.discount > 1 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Discount must be between 0 and 1';
+            END IF;
+        END
     ''')
 
-    sqliteConnection.commit()
+    # MySQL Stored Procedures
+    # Procedure 1: Get user statistics (total products sold, revenue, etc.)
+    cursor.execute('DROP PROCEDURE IF EXISTS get_seller_stats')
+    cursor.execute('''
+        CREATE PROCEDURE get_seller_stats(IN seller_name VARCHAR(255))
+        BEGIN
+            SELECT 
+                seller_name as seller,
+                COUNT(*) as total_products,
+                SUM(sold) as total_items_sold,
+                SUM(sold * price * (1 - discount)) as total_revenue,
+                AVG(price * (1 - discount)) as avg_product_price
+            FROM products
+            WHERE seller = seller_name
+            GROUP BY seller;
+        END
+    ''')
+
+    # Procedure 2: Update product discount
+    cursor.execute('DROP PROCEDURE IF EXISTS update_product_discount')
+    cursor.execute('''
+        CREATE PROCEDURE update_product_discount(
+            IN product_id VARCHAR(255),
+            IN new_discount DECIMAL(3,2)
+        )
+        BEGIN
+            IF new_discount < 0 OR new_discount > 1 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Discount must be between 0 and 1';
+            ELSE
+                UPDATE products 
+                SET discount = new_discount 
+                WHERE id = product_id;
+            END IF;
+        END
+    ''')
+
+    # Procedure 3: Get low stock products
+    cursor.execute('DROP PROCEDURE IF EXISTS get_low_stock_products')
+    cursor.execute('''
+        CREATE PROCEDURE get_low_stock_products(IN threshold INT)
+        BEGIN
+            SELECT id, name, stock, seller, category
+            FROM products
+            WHERE stock <= threshold AND stock > 0
+            ORDER BY stock ASC;
+        END
+    ''')
+
+    # Procedure 4: Get top selling products
+    cursor.execute('DROP PROCEDURE IF EXISTS get_top_selling_products')
+    cursor.execute('''
+        CREATE PROCEDURE get_top_selling_products(IN limit_count INT)
+        BEGIN
+            SELECT 
+                id, 
+                name, 
+                description, 
+                price, 
+                discount, 
+                sold,
+                (price * (1 - discount)) as discounted_price,
+                (sold * price * (1 - discount)) as total_revenue
+            FROM products
+            WHERE sold > 0
+            ORDER BY sold DESC
+            LIMIT limit_count;
+        END
+    ''')
+
+    # Procedure 5: Process order (combines stock update and order history)
+    cursor.execute('DROP PROCEDURE IF EXISTS process_order')
+    cursor.execute('''
+        CREATE PROCEDURE process_order(
+            IN p_username VARCHAR(255),
+            IN p_product_id VARCHAR(255)
+        )
+        BEGIN
+            DECLARE current_stock INT;
+            
+            -- Check stock availability
+            SELECT stock INTO current_stock 
+            FROM products 
+            WHERE id = p_product_id;
+            
+            IF current_stock IS NULL THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Product not found';
+            ELSEIF current_stock <= 0 THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Product out of stock';
+            ELSE
+                -- Update stock and sold count
+                UPDATE products 
+                SET stock = stock - 1, sold = sold + 1 
+                WHERE id = p_product_id;
+                
+                -- Insert into order history
+                INSERT INTO order_history (user, product, buy_date) 
+                VALUES (p_username, p_product_id, CURDATE());
+            END IF;
+        END
+    ''')
+
+    mysqlConnection.commit()
 
 
 def account_verification(username, password):
     global cursor
     cursor.execute(
-        f'SELECT username,password from users where username = "{username}"')
+        'SELECT username, password FROM users WHERE username = %s', (username,))
     results = cursor.fetchall()
     acc = {}
     for result in results:
@@ -121,7 +250,7 @@ def account_verification(username, password):
 
 def account_creation(username, password):
     global cursor
-    cursor.execute('Select username from users')
+    cursor.execute('SELECT username FROM users')
     results = cursor.fetchall()
     usernames = [x[0] for x in results]
 
@@ -140,8 +269,8 @@ def account_creation(username, password):
     # Success
     else:
         cursor.execute(
-            f'insert into users values("{username}","{password}",NULL)')
-        cursor.execute('commit')
+            'INSERT INTO users VALUES(%s, %s, NULL)', (username, password))
+        mysqlConnection.commit()
         return 'success'
 
 
@@ -149,7 +278,7 @@ def account_creation(username, password):
 def engine(phrase):
     phrase = phrase.lower()
     cursor.execute(
-        'select id,name,description,price,discount,stock,category,seller, "http://127.0.0.1:5000/product/" || id as link from products')
+        'SELECT id, name, description, price, discount, stock, category, seller, CONCAT("http://127.0.0.1:5000/product/", id) as link FROM products')
     output = cursor.fetchall()
 
     df = pd.DataFrame(columns=['name', 'description',
@@ -163,7 +292,7 @@ def engine(phrase):
             x[3],
             x[4],
             x[5],
-            x[7],
+            x[6],
             x[7])
 
         if phrase in product.name.lower():
@@ -181,18 +310,19 @@ def engine(phrase):
 def insert_product(name, description, price, discount, stock, category, seller):
     global cursor
 
-    cursor.execute('select id from products')
+    cursor.execute('SELECT id FROM products')
     output = cursor.fetchall()
 
     ids = [x[0] for x in output]
 
     id = 0
 
-    id = (random.randrange(0, 999))
+    id = str(random.randrange(0, 999))
 
     cursor.execute(
-        f'insert into products values({id},"{name}","{description}",{price},{int(discount)/100},{stock},"{category}","{seller}",0)')
-    cursor.execute('commit')
+        'INSERT INTO products VALUES(%s, %s, %s, %s, %s, %s, %s, %s, 0)',
+        (id, name, description, price, int(discount)/100, stock, category, seller))
+    mysqlConnection.commit()
 
     return id
 
@@ -201,14 +331,14 @@ def insert_cc(username, number, cvv):
     global cursor
 
     cursor.execute(
-        f'insert into credit_card values("{number}","{cvv}","{username}")')
-    cursor.execute('commit')
+        'INSERT INTO credit_card VALUES(%s, %s, %s)', (number, cvv, username))
+    mysqlConnection.commit()
 
 
 def fetch_product(id):
     global cursor
 
-    cursor.execute(f"Select * from products where id = {id} and stock > 0")
+    cursor.execute("SELECT * FROM products WHERE id = %s AND stock > 0", (id,))
     results = cursor.fetchall()
     x = results[0]
 
@@ -229,22 +359,22 @@ def fetch_category(category):
     global cursor
 
     if category == 'deals':
-        cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted, 
-            "http://127.0.0.1:5000/product/" || id as link from products where discount > 0 and stock > 0''')
+        cursor.execute('''SELECT name, description, price, ((1-discount)*price) as discounted, 
+            CONCAT("http://127.0.0.1:5000/product/", id) as link FROM products WHERE discount > 0 AND stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
 
     elif category == 'home':
-        cursor.execute(f'''Select id,name,description,price,((1-discount)*price) as discounted, 
-            "http://127.0.0.1:5000/product/" || id as link from products where stock > 0''')
+        cursor.execute('''SELECT id, name, description, price, ((1-discount)*price) as discounted, 
+            CONCAT("http://127.0.0.1:5000/product/", id) as link FROM products WHERE stock > 0''')
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['id', 'name', 'description', 'price', 'discounted price', 'links'])
         output['id'] = output['id'].astype('str')
     else:
-        cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       "http://127.0.0.1:5000/product/" || id as link from products where category = "{category}" and stock > 0''')
+        cursor.execute('''SELECT name, description, price, ((1-discount)*price) as discounted,
+                       CONCAT("http://127.0.0.1:5000/product/", id) as link FROM products WHERE category = %s AND stock > 0''', (category,))
         results = cursor.fetchall()
         output = pd.DataFrame(
             results, columns=['name', 'description', 'price', 'discounted price', 'links'])
@@ -256,7 +386,7 @@ def fetch_user(username):
     global cursor
 
     cursor.execute(
-        f'Select name,description,price,discount,stock from products where seller = "{username}" and stock > 0')
+        'SELECT name, description, price, discount, stock FROM products WHERE seller = %s AND stock > 0', (username,))
 
     results = cursor.fetchall()
 
@@ -270,7 +400,7 @@ def fetch_cc(username):
     global cursor
 
     cursor.execute(
-        f'select number from credit_card where username = "{username}"')
+        'SELECT number FROM credit_card WHERE username = %s', (username,))
 
     results = cursor.fetchall()
 
@@ -280,7 +410,7 @@ def fetch_cc(username):
 def fetch_cvv(cc):
     global cursor
 
-    cursor.execute(f'select cvv from credit_card where number = {cc}')
+    cursor.execute('SELECT cvv FROM credit_card WHERE number = %s', (cc,))
 
     results = cursor.fetchall()[0][0]
 
@@ -290,7 +420,7 @@ def fetch_cvv(cc):
 def fetch_address(username):
     global cursor
 
-    cursor.execute(f'select address from users where username = "{username}"')
+    cursor.execute('SELECT address FROM users WHERE username = %s', (username,))
 
     results = cursor.fetchall()[0][0]
 
@@ -302,22 +432,22 @@ def update_stock(username, productid):
     global cursor
 
     cursor.execute(
-        f'update products set stock = stock - 1 where id = {productid}')
-    cursor.execute('commit')
+        'UPDATE products SET stock = stock - 1 WHERE id = %s', (productid,))
+    mysqlConnection.commit()
     cursor.execute(
-        f'update products set sold = sold + 1 where id = {productid}')
-    cursor.execute('commit')
+        'UPDATE products SET sold = sold + 1 WHERE id = %s', (productid,))
+    mysqlConnection.commit()
     cursor.execute(
-        f'insert into order_history values("{username}",{productid},date())')
-    cursor.execute('commit')
+        'INSERT INTO order_history (user, product, buy_date) VALUES(%s, %s, CURDATE())', (username, productid))
+    mysqlConnection.commit()
 
 
 def more_products(category):
 
     global cursor
 
-    cursor.execute(f'''Select name,description,price,((1-discount)*price) as discounted,
-                       "http://127.0.0.1:5000/product/" || id as link,id from products where category = "{category}" and stock > 0''')
+    cursor.execute('''SELECT name, description, price, ((1-discount)*price) as discounted,
+                       CONCAT("http://127.0.0.1:5000/product/", id) as link, id FROM products WHERE category = %s AND stock > 0''', (category,))
 
     results = cursor.fetchall()
 
@@ -327,8 +457,8 @@ def more_products(category):
 def order_history(username):
     global cursor
 
-    cursor.execute(f'''select name, description,category,seller,((1-discount)*price) as discounted,buy_date from order_history,products 
-                   where order_history.user = "{username}" and order_history.product = products.id''')
+    cursor.execute('''SELECT name, description, category, seller, ((1-discount)*price) as discounted, buy_date FROM order_history, products 
+                   WHERE order_history.user = %s AND order_history.product = products.id''', (username,))
 
     output = pd.DataFrame(cursor.fetchall(), columns=[
                           'Name', 'Description', 'Category', 'Seller', 'Price', 'Date Bought'])
