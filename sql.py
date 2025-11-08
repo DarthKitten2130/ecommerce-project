@@ -4,12 +4,10 @@ import sqlite3
 import pandas as pd
 from classes import Product
 
-sqliteConnection = conn = sqlite3.connect(
-    'ecommerce.db', check_same_thread=False)
+sqliteConnection = conn = sqlite3.connect('ecommerce.db', check_same_thread=False)
 cursor = sqliteConnection.cursor()
 
 # Account Functions
-
 
 def create_table():
     cursor.execute('''
@@ -47,13 +45,6 @@ def create_table():
                    user TEXT PRIMARY KEY,
                    product INT ALTERNATE KEY,
                    buy_date TEXT);''')
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cart (
-            user TEXT,
-            product INT
-        );
-    ''')
 
     sqliteConnection.commit()
 
@@ -100,8 +91,7 @@ def account_creation(username, password):
 
     # Success
     else:
-        cursor.execute(
-            f'insert into users values("{username}","{password}",NULL)')
+        cursor.execute(f'insert into users values("{username}","{password}",NULL)')
         cursor.execute('commit')
         return 'success'
 
@@ -247,7 +237,6 @@ def fetch_cvv(cc):
 
     return results
 
-
 def fetch_address(username):
     global cursor
 
@@ -256,6 +245,7 @@ def fetch_address(username):
     results = cursor.fetchall()[0][0]
 
     return results
+
 
 
 def update_stock(username, productid):
@@ -295,22 +285,3 @@ def order_history(username):
                           'Name', 'Description', 'Category', 'Seller', 'Price', 'Date Bought'])
 
     return output
-
-
-def fetch_cart(username):
-    global cursor
-
-    cursor.execute(
-        f'''select product from cart where user = "{username}"''')
-
-    output = pd.DataFrame(cursor.fetchall(), columns=['Product'])
-
-    return output
-
-
-def add_to_cart(username, productid):
-    global cursor
-
-    cursor.execute(
-        f'''insert into cart values("{username}",{productid})''')
-    cursor.execute('commit')
