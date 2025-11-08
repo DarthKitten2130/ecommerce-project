@@ -4,10 +4,12 @@ import sqlite3
 import pandas as pd
 from classes import Product
 
-sqliteConnection = conn = sqlite3.connect('ecommerce.db', check_same_thread=False)
+sqliteConnection = conn = sqlite3.connect(
+    'ecommerce.db', check_same_thread=False)
 cursor = sqliteConnection.cursor()
 
 # Account Functions
+
 
 def create_table():
     cursor.execute('''
@@ -45,6 +47,52 @@ def create_table():
                    user TEXT PRIMARY KEY,
                    product INT ALTERNATE KEY,
                    buy_date TEXT);''')
+
+    # Trigger 1: Prevent negative stock
+    cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS prevent_negative_stock
+        BEFORE UPDATE ON products
+        FOR EACH ROW
+        WHEN NEW.stock < 0
+        BEGIN
+            SELECT RAISE(ABORT, 'Stock cannot be negative');
+        END;
+    ''')
+
+    # Trigger 2: Auto-lowercase usernames for consistency
+    cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS lowercase_username
+        BEFORE INSERT ON users
+        FOR EACH ROW
+        BEGIN
+            SELECT CASE
+                WHEN NEW.username != LOWER(NEW.username)
+                THEN RAISE(ABORT, 'Username must be lowercase')
+            END;
+        END;
+    ''')
+
+    # Trigger 3: Validate discount range (must be between 0 and 1)
+    cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS validate_discount
+        BEFORE INSERT ON products
+        FOR EACH ROW
+        WHEN NEW.discount < 0 OR NEW.discount > 1
+        BEGIN
+            SELECT RAISE(ABORT, 'Discount must be between 0 and 1');
+        END;
+    ''')
+
+    # Also validate discount on updates
+    cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS validate_discount_update
+        BEFORE UPDATE ON products
+        FOR EACH ROW
+        WHEN NEW.discount < 0 OR NEW.discount > 1
+        BEGIN
+            SELECT RAISE(ABORT, 'Discount must be between 0 and 1');
+        END;
+    ''')
 
     sqliteConnection.commit()
 
@@ -91,7 +139,8 @@ def account_creation(username, password):
 
     # Success
     else:
-        cursor.execute(f'insert into users values("{username}","{password}",NULL)')
+        cursor.execute(
+            f'insert into users values("{username}","{password}",NULL)')
         cursor.execute('commit')
         return 'success'
 
@@ -237,6 +286,7 @@ def fetch_cvv(cc):
 
     return results
 
+
 def fetch_address(username):
     global cursor
 
@@ -245,7 +295,6 @@ def fetch_address(username):
     results = cursor.fetchall()[0][0]
 
     return results
-
 
 
 def update_stock(username, productid):
